@@ -4,9 +4,8 @@ Basic concepts of Assembly and Computer Architechture such as Setting register, 
 
 ## ⚠️ Disclaimer
 
-This repository is strictly for educational purposes.
-No exploit code targeting real-world systems is included.
-Sensitive details, flags, or protected material are intentionally excluded.
+All content in this repository is created for educational and learning purposes only.
+No real-world systems are targeted, and no confidential or proprietary material is shared.
 
 ## 👤 Author
 
