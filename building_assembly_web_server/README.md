@@ -56,3 +56,8 @@ This repository contains documentation and learning notes only.
 The actual server implementation is available in the companion repository:
 
 **Minimal HTTP GET & POST Server in x86_64 Assembly**
+
+---
+
+## Reference
+
