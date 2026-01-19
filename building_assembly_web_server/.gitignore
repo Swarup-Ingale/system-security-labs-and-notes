@@ -1,1 +1,13 @@
-
+*.o
+*.out
+*.bin
+server
+*.lst
+*.map
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+core
+core.*
