@@ -4,7 +4,7 @@
     
     def solve():
         print("[*] Getting the encrypted password from the dispatcher...")
-        dispatcher = process(["/challenge/dispatcher", "pw"])
+        dispatcher = process(["YOUR_DISPATCHER_CODE", "PASSWORD_FILE"])
         task_line = dispatcher.recvline().decode().strip()
         dispatcher.close()
         
@@ -13,7 +13,7 @@
         blocks = [target_data[i:i+16] for i in range(0, len(target_data), 16)]
         
         print("[*] Starting the worker process...")
-        worker = process("/challenge/worker")
+        worker = process("YOUR_AES_DECRYPTER_CODE")
         worker.recvline() # Consume the "The password is X bytes long!" line
         
         recovered_plaintext = b""
@@ -59,7 +59,7 @@
                         # --- THE BULLETPROOF FIX ---
                         # Kill and restart the worker to clear any leftover \n garbage
                         worker.close()
-                        worker = process("/challenge/worker", level='error')
+                        worker = process("YOUR_AES_DECRYPTER_CODE", level='error')
                         worker.recvline() # Consume the startup line again
                         break
                 
@@ -78,7 +78,7 @@
             final_password = unpad(recovered_plaintext, 16).decode('latin1')
             print(f"\n[!!!] Attack Complete!")
             print(f"Password: {final_password}")
-            print("\nRun /challenge/redeem and paste this password to get the flag!")
+            print("\nRun YOUR_AES_PASSWORD_CRACKER and paste this password to get the data!")
         except Exception as e:
             print(f"\n[!] Decrypted, but unpadding failed. Raw text: {recovered_plaintext}")
     
