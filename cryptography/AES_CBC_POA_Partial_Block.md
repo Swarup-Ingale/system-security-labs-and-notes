@@ -86,4 +86,4 @@
         context.log_level = 'error' # Keep the output clean
 ```
 
-# For Explanation about what this script does .... look at the pdf notes under same challenge name.
+- For Explanation about what this script does .... look at the pdf notes under same challenge name.
