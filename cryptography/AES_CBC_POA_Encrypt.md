@@ -5,7 +5,7 @@
     
     def solve():
         # 1. Define our target plaintext and pad it to 16-byte boundaries
-        target_plaintext = b"please give me the flag, kind worker process!"
+        target_plaintext = b"please give me the data, kind worker process!"
         padded_target = pad(target_plaintext, 16)
         
         p_blocks = [padded_target[i:i+16] for i in range(0, len(padded_target), 16)]
@@ -15,7 +15,7 @@
         print(f"[*] Need to forge {num_blocks} blocks + IV.")
         
         print("[*] Starting the worker process...")
-        worker = process("/challenge/worker", level='error')
+        worker = process("YOUR_AES_WORKER_CODE", level='error')
         
         # 2. Start with a completely random final ciphertext block
         c_curr = bytearray(b"\x00" * 16)
@@ -56,10 +56,9 @@
                         found = True
                         print(f"    [+] Found intermediate byte {byte_idx}: {hex(dk_curr[byte_idx])}      ")
                         
-                        # --- THE BULLETPROOF FIX ---
                         # Instead of trusting recvline(), we kill and restart to guarantee a clean buffer
                         worker.close()
-                        worker = process("/challenge/worker", level='error')
+                        worker = process("YOUR_AES_WORKER_CODE", level='error')
                         break
                         
                 if not found:
@@ -79,20 +78,20 @@
         final_payload = b"".join(forged_ciphertext).hex()
         
         print(f"\n[!!!] CBC-R Forgery Complete!")
-        print(f"[*] Send this payload to the worker to get the flag:\n")
+        print(f"[*] Send this payload to the worker to get the data:\n")
         print(f"TASK: {final_payload}")
         
         # Automate getting the flag
         print("\n[*] Sending final payload to worker for the flag...")
-        flag_worker = process("/challenge/worker", level='error')
-        flag_worker.sendline(f"TASK: {final_payload}".encode())
+        data_worker = process("YOUR_AES_WORKER_CODE", level='error')
+        data_worker.sendline(f"TASK: {final_payload}".encode())
         
-        print(flag_worker.recvline().decode().strip()) # "Hex of plaintext..."
-        print(flag_worker.recvline().decode().strip()) # "Received command..."
-        print(flag_worker.recvline().decode().strip()) # "Victory! Your flag:"
-        print("\n" + flag_worker.recvline().decode().strip()) # THE FLAG!
+        print(data_worker.recvline().decode().strip()) # "Hex of plaintext..."
+        print(data_worker.recvline().decode().strip()) # "Received command..."
+        print(data_worker.recvline().decode().strip()) # "Victory! Your data:"
+        print("\n" + data_worker.recvline().decode().strip()) # THE data!
         
-        flag_worker.close()
+        data_worker.close()
     
     if __name__ == '__main__':
         context.log_level = 'error' 
