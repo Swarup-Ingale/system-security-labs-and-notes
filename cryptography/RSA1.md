@@ -28,7 +28,7 @@
 - $n$ and $e$ are the Public Key.
 - $d$ is the Private Key.
 - It takes the data, turns it into a giant number, and encrypts it using the formula:
-  - $$c = m^e mod n$$It gives us $n$, $e$, $d$, and the Ciphertext.
+  - $$c = \pm^e mod n$$It gives us $n$, $e$, $d$, and the Ciphertext.
 - Since we have the Private Key ($d$), our job is simply to "undo" the math.
 
 ---
