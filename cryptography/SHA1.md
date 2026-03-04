@@ -1,6 +1,6 @@
 # A full SHA-256 hash has $2^{256}$ possible values. However, a 3-byte (24-bit) prefix only has $2^{24}$ (16,777,216) possible values. On a modern computer, checking 16 million hashes is extremely fast.
 
-# This Script basically helps us understand how we can perform hash collision and genrerate same hash as our secret to get the data
+- This Script basically helps us understand how we can perform hash collision and genrerate same hash as our secret to get the data
 
 ---
 
