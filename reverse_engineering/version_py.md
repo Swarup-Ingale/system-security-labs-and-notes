@@ -1,5 +1,7 @@
 # file headers containing both a magic number to identify the format and a version number to dictate how the rest of the parser should behave.
 
+- The Code is same for C, Python and X86
+
 # Script
   ```
     import struct
