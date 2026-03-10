@@ -1,5 +1,6 @@
 # Concept 
 - We will learn to provide custom generated metadata such as dimensions along with version, headers, etc.
+- Same goes for X86, and C too.
 
 # Solution 
 - Magic Number (Bytes 0-3): Must be exactly (M63.
