@@ -27,3 +27,5 @@
   ```
 
 - This writes the neccessary bytes for magic number of headers and file contents and hence modifies the ELF binary of the file
+
+- for more information read the notes regarding the topic.
