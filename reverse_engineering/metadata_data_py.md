@@ -33,3 +33,5 @@
       f.write(b"A" * 868)
 ```
 - The script will construct the perfect 13-byte header, append 868 bytes of dummy pixel data, and pass every single assertion.
+
+- for more information read the notes regarding the topic.
