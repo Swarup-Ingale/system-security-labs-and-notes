@@ -1,6 +1,11 @@
 # Now lets learn to write payload for much bigger proper files to get our priorities straight
 
 - Note: The script remains same for C, Python and x86
+- For x86 code ... we have to create raw bytes using :
+  ```
+    gdb --batch -ex "set print elements 0" -ex "x/s &desired_output" /challenge/cimg > dump.txt
+  ```
+- Load dump.txt instead of source.c for x86.
 
 # Script
 ```
