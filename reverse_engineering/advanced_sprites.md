@@ -1,3 +1,5 @@
+# Method of Solve
+  
   1. Read the challenge source
      In cimg.c, the important checks were:
       - magic must be cIMG
@@ -91,22 +93,74 @@
 
      That is below the challenge limit of 285.
 
-     The generator is here:
+# The Script :
+```
+#!/usr/bin/env python3
+import struct
+from pathlib import Path
 
-     solve_advanced_sprites.py
 
-  7. Verify locally
-     Running:
+WIDTH = 76
+HEIGHT = 24
 
-     ./cimg solve.cimg
 
-     locally reached the win() path, proven by this message:
+def directive_3(sprite_id, rows):
+    height = len(rows)
+    width = len(rows[0])
+    data = "".join(rows).encode("ascii")
+    assert all(len(row) == width for row in rows)
+    assert all(0x20 <= b <= 0x7e for b in data)
+    return struct.pack("<HBBB", 3, sprite_id, width, height) + data
 
-     ERROR: Failed to open the flag -- No such file or directory!
 
-     That means the image matched, but local /flag was unavailable.
+def directive_4(sprite_id, rgb, x, y, repeat_w=1, repeat_h=1, transparent=0):
+    return struct.pack(
+        "<HBBBBBBBBB",
+        4,
+        sprite_id,
+        rgb[0],
+        rgb[1],
+        rgb[2],
+        x,
+        y,
+        repeat_w,
+        repeat_h,
+        transparent,
+    )
 
-  8. Run remotely
-     Then we sent the same payload to the actual challenge binary:
 
-     ssh -i /home/swale/PWN/key hacker@dojo.pwn.college /challenge/cimg < solve.cimg
+directives = []
+
+directives.append(directive_3(0, ["."] + ["|"] * 22 + ["'"]))
+directives.append(directive_4(0, (255, 255, 255), 0, 0))
+directives.append(directive_4(0, (255, 255, 255), 75, 0))
+
+directives.append(directive_3(1, ["-"]))
+directives.append(directive_4(1, (255, 255, 255), 1, 0, repeat_w=74))
+directives.append(directive_4(1, (255, 255, 255), 1, 23, repeat_w=74))
+
+art = [
+    (2, (255, 0, 0), 23, 10, ["  ___ ", " / __|", "| (__ ", " \\___|"]),
+    (3, (0, 255, 0), 30, 9, [" ___ ", "|_ _|", " | | ", " | | ", "|___|"]),
+    (
+        4,
+        (0, 0, 255),
+        36,
+        9,
+        [" __  __ ", "|  \\/  |", "| |\\/| |", "| |  | |", "|_|  |_|"],
+    ),
+    (5, (128, 128, 128), 45, 9, ["  ____ ", " / ___|", "| |  _ ", "| |_| |", " \\____|"]),
+]
+
+for sprite_id, rgb, x, y, rows in art:
+    directives.append(directive_3(sprite_id, rows))
+    directives.append(directive_4(sprite_id, rgb, x, y, transparent=ord(" ")))
+
+payload = struct.pack("<4sHBBI", b"cIMG", 4, WIDTH, HEIGHT, len(directives)) + b"".join(directives)
+assert len(payload) == 279
+
+Path("solve.cimg").write_bytes(payload)
+print(f"wrote solve.cimg ({len(payload)} bytes, {len(directives)} directives)")
+```
+
+- This solves a most complex reverse category challenge of generating a custom file.
