@@ -1,5 +1,4 @@
-# Name
-Directory Lockout Bypass via Symlink and Relative Path Flaw
+# Directory Lockout Bypass via Symlink and Relative Path Flaw
 
 # Concept
 When I analyzed the script, I immediately noticed its aggressive approach to locking down the file system. It takes an absolute path (`DEST`), creates it, and then loops through every single directory in that path, changing its ownership to `root:root` and its permissions to `000`. It also explicitly checks if any directory fragment is a symlink and exits if it finds one. 
